@@ -28,6 +28,14 @@ app.get("/weather/:lat/:lon", async (req, res) => {
   res.send(data.data);
 });
 
+app.get("/3h/:lat/:lon", async (req, res) => {
+  const { lat, lon } = req.params;
+  const data = await weatherApi.get(
+    `data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${process.env.OPEN_WEATHER_API_KEY}`
+  );
+  res.send(data.data);
+});
+
 app.listen(PORT, () => {
   console.log("Server listening on port 5000");
 });
