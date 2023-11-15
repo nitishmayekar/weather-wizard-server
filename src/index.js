@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { weatherApi} from "./apis/index.js";
+import { weatherApi, googleApi} from "./apis/index.js";
 
 dotenv.config();
 
@@ -33,6 +33,34 @@ app.get("/3h/:lat/:lon", async (req, res) => {
   const data = await weatherApi.get(
     `data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${process.env.OPEN_WEATHER_API_KEY}`
   );
+  res.send(data.data);
+});
+
+app.get("/places/:lat/:lon", async (req, res) => {
+  const { lat, lon } = req.params;
+  const data = await googleApi.post(
+    "/places:searchNearby",
+    {
+      includedTypes: ["tourist_attraction"],
+      maxResultCount: 5,
+      locationRestriction: {
+        circle: {
+          center: {
+            latitude: lat,
+            longitude: lon,
+          },
+          radius: 10000.0,
+        },
+      },
+    },
+    {
+      headers: {
+        "X-Goog-FieldMask": "places.id,places.displayName,places.photos",
+        "X-Goog-Api-key": process.env.GOOGLE_API_KEY,
+      },
+    }
+  );
+  // console.log("🚀 ~ file: index.js:54 ~ app.get ~ data:", data.data);
   res.send(data.data);
 });
 
