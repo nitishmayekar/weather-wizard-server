@@ -59,8 +59,7 @@ app.get("/places/:lat/:lon", async (req, res) => {
         "X-Goog-Api-key": process.env.GOOGLE_API_KEY,
       },
     }
-  );
-  // console.log("🚀 ~ file: index.js:54 ~ app.get ~ data:", data.data);
+  );  
   res.send(data.data);
 });
 
